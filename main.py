@@ -4,10 +4,16 @@ from Clusertering import *
 
 
 # ------------------------------------------------ Basic File Processing -----------------------------------------------
-input_path = input("Please enter the path the the LAZ file that you want to process: ")     # example: ../lidar2019-ndp-c30-r7-ll93500-67000-epsg2169_(with_water)/LIDAR2019_NdP_94500_68000_EPSG2169.laz
+input_path = input("Please enter the path of the LAZ file that you want to process: ")     # example: ../lidar2019-ndp-c30-r7-ll93500-67000-epsg2169_(with_water)/LIDAR2019_NdP_94500_68000_EPSG2169.laz
 
 # for development (quickly test the application with inputting a path each time)
-if input_path == "":
+if input_path == "1":
+    input_path = 'Files/LAS_Files/test_file.las'
+elif input_path == "2":
+    input_path = 'Files/LAS_Files/test_file2.las'
+elif input_path == "3":
+    input_path = 'Files/LAS_Files/test_file3.las'
+elif input_path == "4":
     input_path = 'Files/LAS_Files/test_file4_with_water.las'
 
 las_file = decompress(input_path, "Files/LAS_Files/output_file.las")
@@ -53,7 +59,7 @@ while not valid_answer:
 
 # visualization of raw data set
 if visualization:
-    print("\n---------------------------------------------- VISUALIZATION ----------------------------------------------")
+    print("\n------------------------------------------------ VISUALIZATION ------------------------------------------------")
     print("Navigate through the point cloud by holding and dragging the LEFT MOUSE BUTTON (rotate the viewpoint around a turntable).")
     print("Move the viewpoint by holding SHIFT and perform LEFT MOUSE BUTTON drag.")
     print("Select a region of the point cloud by holding CTRL (COMMAND on Mac) and LEFT MOUSE BUTTON while dragging a box.")
@@ -129,6 +135,18 @@ if visualization:
 print("\n------------------------------------------------- CLUSTERING --------------------------------------------------")
 
 print("Possible classes of the data points:", classes)
+print("""Meaning of the integer values:
+[0]	    -	unclassified points
+[2] 	-	ground points
+[3] 	-	low vegetation
+[4] 	-	medium vegetation
+[5] 	-	high vegetation
+[6] 	-	buildings
+[7] 	-	low points (noise)
+[9] 	-	water
+[13] 	-	bridges, footbridges, viaducts
+[15]	-	high voltage lines
+""")
 class_of_points = input("Please enter the integer corresponding to the class of your choice: ")
 
 valid_answer = False
@@ -148,7 +166,7 @@ df = get_df_of_class(las_file, classification=int(class_of_points), csv=False)
 df_scaled, df_normalized = preprocessing(df)
 
 print("\n----------------------------- Clustering Algorithm -----------------------------")
-list_of_algorithms = ['dbscan', 'kmeans']
+list_of_algorithms = ['dbscan', 'kmeans', 'optics', 'agglomerative_clustering']
 print("Possible clustering algorithms:", list_of_algorithms)
 algorithm = input("Please enter the name of the algorithm (of the above list) that you want to use for the clustering of the data points: ")
 
@@ -174,8 +192,18 @@ elif algorithm.lower() == 'kmeans':
 
     labels = kmeans(df_normalized, number_of_clusters, random_state)
 
-elif algorithm.lower() == '':
-    pass
+elif algorithm.lower() == 'optics':
+    # ask user for parameters
+    min_samples = 2
+
+    labels = optics(df_normalized, min_samples)
+
+elif algorithm.lower() == 'agglomerative_clustering':
+    # ask user for parameters
+    number_of_clusters = 4
+    linkage = 'single'
+
+    labels = agglomerative_clustering(df_normalized, number_of_clusters, linkage)
 
 print("\nNumber of cluster found:", len(np.unique(labels)))
 print("Different labels of clusters:", np.unique(labels))
@@ -185,7 +213,7 @@ print("\nOriginal dataframe with label:\n", df.head())
 
 
 # --------------------------------------------- Visualization of Clusters ----------------------------------------------
-print("\n----------------------------- Cluster Visualization ----------------------------")
+print("\n-------------------------------------------- Cluster VISUALIZATION --------------------------------------------")
 
 # ask user if he wants to visualize the clusters
 cluster_vis = input("Do you want to visualize the computed clusters? (y / n): ")
@@ -205,6 +233,12 @@ while not valid_answer:
         cluster_vis = input("Please enter a valid answer (y / n): ")
 
 if cluster_visualization:
+    print("\nNavigate through the point cloud by holding and dragging the LEFT MOUSE BUTTON (rotate the viewpoint around a turntable).")
+    print("Move the viewpoint by holding SHIFT and perform LEFT MOUSE BUTTON drag.")
+    print("Select a region of the point cloud by holding CTRL (COMMAND on Mac) and LEFT MOUSE BUTTON while dragging a box.")
+    print("\nWhen a selection was performed, press ENTER to open a new viewer with the selection and without the ground points.")
+    print("Press ENTER to quit the viewer.")
+
     points = df[['X', 'Y', 'Z']].to_numpy()
     labels = df['Label'].to_numpy()
 
@@ -220,3 +254,6 @@ if cluster_visualization:
 
     viewer1 = pptkviz(points, np.array(colors))
     #viewer1.set(point_size=0.001)
+
+    viewer1.wait()
+    viewer1.close()

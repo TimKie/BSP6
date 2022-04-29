@@ -3,8 +3,7 @@ import numpy as np
 import pylas
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
-from sklearn.cluster import DBSCAN
-from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN, KMeans, OPTICS, AgglomerativeClustering
 
 
 def get_df_of_class(input_file, classification, csv):
@@ -62,10 +61,29 @@ def dbscan(df, eps):
 
 def kmeans(df, number_of_clusters, random_state):
     print("\n------------------------------------ KMeans ------------------------------------")
-
     print("Processing...")
 
     kmeans = KMeans(n_clusters=number_of_clusters, random_state=random_state)
     kmeans.fit(pd.DataFrame(df))
 
     return kmeans.labels_
+
+
+def optics(df, min_samples):
+    print("\n------------------------------------ OPTICS ------------------------------------")
+    print("Processing...")
+
+    optics = OPTICS(min_samples=min_samples)
+    optics.fit(pd.DataFrame(df))
+
+    return optics.labels_
+
+
+def agglomerative_clustering(df, number_of_clusters, linkage):
+    print("\n--------------------------- Agglomerative Clustering ---------------------------")
+    print("Processing...")
+
+    agglomerative_clustering = AgglomerativeClustering(n_clusters=number_of_clusters, linkage=linkage)
+    agglomerative_clustering.fit(df)
+
+    return agglomerative_clustering.labels_
