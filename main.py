@@ -1,6 +1,7 @@
 from File_Functions import *
 from Visualization import *
 from Clusertering import *
+import os
 
 
 # ------------------------------------------------ Basic File Processing -----------------------------------------------
@@ -321,3 +322,39 @@ if cluster_visualization:
 
     viewer1.wait()
     viewer1.close()
+
+
+# --------------------------------------------- Cluster Result Dataframe  ----------------------------------------------
+print("\n------------------------------------------- CLUSTER RESULT DATAFRAME ------------------------------------------")
+results = input("Do you want to save the clustering results as a CSV file? (y / n): ")
+
+valid_answer = False
+save_results = False
+
+# continue to ask for a valid answer until the user gives a valid input
+while not valid_answer:
+    if results.lower() == 'y' or results.lower() == 'yes':
+        valid_answer = True
+        save_results = True
+    elif results.lower() == 'n' or results.lower() == 'no':
+        valid_answer = True
+    else:
+        results = input("Please enter a valid answer (y / n): ")
+
+if save_results:
+    valid_path = False
+    path_to_save = input("Please enter the path to the location where you want to save the CSV files containing the clustering results: ")
+
+    # continue to ask for a valid answer until the user gives a valid input
+    while not valid_path:
+        if os.path.isdir(path_to_save):
+            valid_path = True
+            name_of_file = input("Please enter a name for the CSV file: ")
+            final_path = os.path.join(path_to_save, name_of_file) + '.csv'
+            df.to_csv(final_path)
+            print("Saved to:", final_path)
+        else:
+            path_to_save = input("Please enter a valid path to a directory: ")
+
+
+

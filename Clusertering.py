@@ -85,7 +85,7 @@ def agglomerative_clustering(df, number_of_clusters, affinity, linkage):
     print("Processing...")
 
     agglomerative_clustering = AgglomerativeClustering(n_clusters=number_of_clusters, affinity=affinity, linkage=linkage)
-    agglomerative_clustering.fit(df)
+    agglomerative_clustering.fit(pd.DataFrame(df))
 
     return agglomerative_clustering.labels_
 
@@ -97,4 +97,4 @@ def gaussian_mixture(df, n_components, covariance_type, max_iter, n_init):
     gaussian_mixture = GaussianMixture(n_components=n_components, covariance_type=covariance_type, max_iter=max_iter, n_init=n_init)
     gaussian_mixture.fit(pd.DataFrame(df))
 
-    return gaussian_mixture.predict(df)
+    return gaussian_mixture.predict(pd.DataFrame(df))
