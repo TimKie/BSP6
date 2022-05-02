@@ -77,3 +77,4 @@ color_map = [
 def colorise(row):
     return color_map[row['Label']]
 
+

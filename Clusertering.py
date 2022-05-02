@@ -4,6 +4,7 @@ import pylas
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.cluster import DBSCAN, KMeans, OPTICS, AgglomerativeClustering
+from sklearn.mixture import GaussianMixture
 
 
 def get_df_of_class(input_file, classification, csv):
@@ -49,41 +50,51 @@ def preprocessing(dataframe):
     return df_scaled, df_normalized
 
 
-def dbscan(df, eps):
+def dbscan(df, eps, min_samples, algorithm):
     print("\n------------------------------------ DBSCAN ------------------------------------")
     print("Processing...")
 
-    dbscan = DBSCAN(eps=eps)
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples, algorithm=algorithm)
     dbscan.fit(pd.DataFrame(df))
 
     return dbscan.labels_
 
 
-def kmeans(df, number_of_clusters, random_state):
+def kmeans(df, number_of_clusters, n_init, max_iter, algorithm):
     print("\n------------------------------------ KMeans ------------------------------------")
     print("Processing...")
 
-    kmeans = KMeans(n_clusters=number_of_clusters, random_state=random_state)
+    kmeans = KMeans(n_clusters=number_of_clusters, n_init=n_init, max_iter=max_iter, algorithm=algorithm)
     kmeans.fit(pd.DataFrame(df))
 
     return kmeans.labels_
 
 
-def optics(df, min_samples):
+def optics(df, min_samples, max_eps, cluster_method):
     print("\n------------------------------------ OPTICS ------------------------------------")
     print("Processing...")
 
-    optics = OPTICS(min_samples=min_samples)
+    optics = OPTICS(min_samples=min_samples, max_eps=max_eps, cluster_method=cluster_method)
     optics.fit(pd.DataFrame(df))
 
     return optics.labels_
 
 
-def agglomerative_clustering(df, number_of_clusters, linkage):
+def agglomerative_clustering(df, number_of_clusters, affinity, linkage):
     print("\n--------------------------- Agglomerative Clustering ---------------------------")
     print("Processing...")
 
-    agglomerative_clustering = AgglomerativeClustering(n_clusters=number_of_clusters, linkage=linkage)
+    agglomerative_clustering = AgglomerativeClustering(n_clusters=number_of_clusters, affinity=affinity, linkage=linkage)
     agglomerative_clustering.fit(df)
 
     return agglomerative_clustering.labels_
+
+
+def gaussian_mixture(df, n_components, covariance_type, max_iter, n_init):
+    print("\n------------------------------- Gaussian Mixture -------------------------------")
+    print("Processing...")
+
+    gaussian_mixture = GaussianMixture(n_components=n_components, covariance_type=covariance_type, max_iter=max_iter, n_init=n_init)
+    gaussian_mixture.fit(pd.DataFrame(df))
+
+    return gaussian_mixture.predict(df)

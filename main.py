@@ -16,6 +16,7 @@ elif input_path == "3":
 elif input_path == "4":
     input_path = 'Files/LAS_Files/test_file4_with_water.las'
 
+print("\nDecompressing LAZ file...")
 las_file = decompress(input_path, "Files/LAS_Files/output_file.las")
 
 # ask if the user wants to get a description of the file
@@ -89,6 +90,18 @@ if visualization:
     # visualize only points from a specific class
     if visualize_one_class:
         print("\nPossible classes of the data points:", classes)
+        print("""Meaning of the integer values:
+[0]	    -	unclassified points
+[2] 	-	ground points
+[3] 	-	low vegetation
+[4] 	-	medium vegetation
+[5] 	-	high vegetation
+[6] 	-	buildings
+[7] 	-	low points (noise)
+[9] 	-	water
+[13] 	-	bridges, footbridges, viaducts
+[15]	-	high voltage lines
+        """)
         class_of_points = input("Please enter the integer corresponding to the class of your choice: ")
 
         valid_answer = False
@@ -166,44 +179,95 @@ df = get_df_of_class(las_file, classification=int(class_of_points), csv=False)
 df_scaled, df_normalized = preprocessing(df)
 
 print("\n----------------------------- Clustering Algorithm -----------------------------")
-list_of_algorithms = ['dbscan', 'kmeans', 'optics', 'agglomerative_clustering']
-print("Possible clustering algorithms:", list_of_algorithms)
-algorithm = input("Please enter the name of the algorithm (of the above list) that you want to use for the clustering of the data points: ")
+dict_of_algorithms = {'dbscan': 1, 'kmeans': 2, 'optics': 3, 'agglomerative_clustering': 4, 'gaussian_mixture': 5}
+print("Possible clustering algorithms:", dict_of_algorithms)
+algorithm = input("Please enter the name or associated integer of the algorithm (of the above list) that you want to use for the clustering of the data points: ")
 
 valid_answer = False
 # continue to ask for a valid answer until the user gives a valid input
 while not valid_answer:
-    if algorithm.lower() in list_of_algorithms:
+    if (algorithm.lower() in dict_of_algorithms) or (int(algorithm) in dict_of_algorithms.values()):
         valid_answer = True
     else:
         algorithm = input("Please enter a valid answer (string of the above list): ")
 
 
-if algorithm.lower() == 'dbscan':
+if algorithm.lower() == 'dbscan' or int(algorithm) == 1:
+    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
     # ask user for parameters
-    eps = 0.1
+    eps_input = input("EPS (distance between two samples): ")
+    min_samples_input = input("Minimum number of samples: ")
+    algorithm_input = input("Algorithm (possible values: 'auto', 'ball_tree', 'kd_tree', 'brute'): ")
 
-    labels = dbscan(df_normalized, eps)
+    # use default parameters when the user does not provide an input
+    eps = eps_input if eps_input.isdigit() else 0.1
+    min_samples = min_samples_input if min_samples_input.isdigit() else 5
+    algo = algorithm_input if algorithm_input in ['auto', 'ball_tree', 'kd_tree', 'brute'] else 'auto'
 
-elif algorithm.lower() == 'kmeans':
+    labels = dbscan(df_normalized, eps, min_samples, algo)
+
+elif algorithm.lower() == 'kmeans' or int(algorithm) == 2:
+    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
     # ask user for parameters
-    number_of_clusters = 19
-    random_state = 0
+    number_of_clusters_input = input("Number of clusters: ")
+    n_init_input = input("Number of new initialization of cluster centroids: ")
+    max_iter_input = input("Maximum number of iterations: ")
+    algorithm_input = input("Algorithm (possible values: 'auto', 'full', 'elkan'): ")
 
-    labels = kmeans(df_normalized, number_of_clusters, random_state)
+    # use default parameters when the user does not provide an input
+    number_of_clusters = number_of_clusters_input if number_of_clusters_input.isdigit() else 4
+    n_init = n_init_input if n_init_input.isdigit() else 10
+    max_iter = max_iter_input if max_iter_input.isdigit() else 300
+    algo = algorithm_input if algorithm_input in ['auto', 'full', 'elkan'] else 'auto'
 
-elif algorithm.lower() == 'optics':
+    labels = kmeans(df_normalized, number_of_clusters, n_init, max_iter, algo)
+
+elif algorithm.lower() == 'optics' or int(algorithm) == 3:
+    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
     # ask user for parameters
-    min_samples = 2
+    min_samples_input = input("Minimum number of samples: ")
+    max_eps_input = input("Maximum EPS (distance between two samples): ")
+    cluster_method_input = input("Clustering method (possible values: 'xi', 'dbscan'): ")
 
-    labels = optics(df_normalized, min_samples)
+    # use default parameters when the user does not provide an input
+    min_samples = min_samples_input if min_samples_input.isdigit() else 5
+    max_eps = max_eps_input if max_eps_input.isdigit() else np.inf
+    cluster_method = cluster_method_input if cluster_method_input in ['xi', 'dbscan'] else 'xi'
 
-elif algorithm.lower() == 'agglomerative_clustering':
+    labels = optics(df_normalized, min_samples, max_eps, cluster_method)
+
+elif algorithm.lower() == 'agglomerative_clustering' or int(algorithm) == 4:
+    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
     # ask user for parameters
-    number_of_clusters = 4
-    linkage = 'single'
+    number_of_clusters_input = input("Number of clusters: ")
+    linkage_input = input("Linkage criterion (possible values: 'ward', 'complete', 'average', 'single'): ")
+    # if linkage is “ward”, only “euclidean” is accepted as affinity
+    affinity = 'euclidean'
+    if linkage_input != 'ward' and linkage_input != '':
+        affinity_input = input("Affinity (possible values: 'euclidean', 'l1', 'l2', 'manhattan', 'cosine', 'precomputed'): ")
+        affinity = affinity_input if affinity_input in ['euclidean', 'l1', 'l2', 'manhattan', 'cosine', 'precomputed'] else 'euclidean'
 
-    labels = agglomerative_clustering(df_normalized, number_of_clusters, linkage)
+    # use default parameters when the user does not provide an input
+    number_of_clusters = number_of_clusters_input if number_of_clusters_input.isdigit() else 4
+    linkage = linkage_input if linkage_input in ['ward', 'complete', 'average', 'single'] else 'ward'
+
+    labels = agglomerative_clustering(df_normalized, number_of_clusters, affinity, linkage)
+
+elif algorithm.lower() == 'gaussian_mixture' or int(algorithm) == 5:
+    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    # ask user for parameters
+    n_components_input = input("Number of mixture components: ")
+    covariance_type_input = input("Covariance type (possible values: 'full', 'tied', 'diag', 'spherical'): ")
+    max_iter_input = input("Maximum number of iterations: ")
+    n_init_input = input("Number of new initialization of cluster centroids: ")
+
+    # use default parameters when the user does not provide an input
+    n_components = n_components_input if n_components_input.isdigit() else 1
+    covariance_type = covariance_type_input if covariance_type_input in ['full', 'tied', 'diag', 'spherical'] else 'full'
+    max_iter = max_iter_input if max_iter_input.isdigit() else 100
+    n_init = n_init_input if n_init_input.isdigit() else 1
+
+    labels = gaussian_mixture(df_normalized, n_components, covariance_type, max_iter, n_init)
 
 print("\nNumber of cluster found:", len(np.unique(labels)))
 print("Different labels of clusters:", np.unique(labels))
@@ -213,7 +277,7 @@ print("\nOriginal dataframe with label:\n", df.head())
 
 
 # --------------------------------------------- Visualization of Clusters ----------------------------------------------
-print("\n-------------------------------------------- Cluster VISUALIZATION --------------------------------------------")
+print("\n-------------------------------------------- CLUSTER VISUALIZATION --------------------------------------------")
 
 # ask user if he wants to visualize the clusters
 cluster_vis = input("Do you want to visualize the computed clusters? (y / n): ")
