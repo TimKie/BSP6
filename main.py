@@ -112,6 +112,7 @@ if visualization:
                 if int(class_of_points) in classes:
                     valid_answer = True
 
+                    print("\nStarting visualization...")
                     class_points, class_colors = select_points(point_cloud, classification=int(class_of_points))
                     viewer1 = pptkviz(class_points, class_colors)
                     viewer1.set(point_size=0.1)
@@ -120,6 +121,7 @@ if visualization:
             else:
                 class_of_points = input("Please enter the integer corresponding to the class of your choice: ")
     else:
+        print("\nStarting visualization...")
         viewer1 = pptkviz(points, colors)
 
     # use either the viewer for one specific class or the viewer for all data points (selection possible with both)
@@ -194,7 +196,7 @@ while not valid_answer:
 
 
 if algorithm.lower() == 'dbscan' or int(algorithm) == 1:
-    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
     # ask user for parameters
     eps_input = input("EPS (distance between two samples): ")
     min_samples_input = input("Minimum number of samples: ")
@@ -205,10 +207,10 @@ if algorithm.lower() == 'dbscan' or int(algorithm) == 1:
     min_samples = min_samples_input if min_samples_input.isdigit() else 5
     algo = algorithm_input if algorithm_input in ['auto', 'ball_tree', 'kd_tree', 'brute'] else 'auto'
 
-    labels = dbscan(df_normalized, eps, min_samples, algo)
+    labels = dbscan(df_normalized, float(eps), int(min_samples), str(algo))
 
 elif algorithm.lower() == 'kmeans' or int(algorithm) == 2:
-    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
     # ask user for parameters
     number_of_clusters_input = input("Number of clusters: ")
     n_init_input = input("Number of new initialization of cluster centroids: ")
@@ -221,10 +223,10 @@ elif algorithm.lower() == 'kmeans' or int(algorithm) == 2:
     max_iter = max_iter_input if max_iter_input.isdigit() else 300
     algo = algorithm_input if algorithm_input in ['auto', 'full', 'elkan'] else 'auto'
 
-    labels = kmeans(df_normalized, number_of_clusters, n_init, max_iter, algo)
+    labels = kmeans(df_normalized, int(number_of_clusters), int(n_init), int(max_iter), str(algo))
 
 elif algorithm.lower() == 'optics' or int(algorithm) == 3:
-    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
     # ask user for parameters
     min_samples_input = input("Minimum number of samples: ")
     max_eps_input = input("Maximum EPS (distance between two samples): ")
@@ -235,10 +237,10 @@ elif algorithm.lower() == 'optics' or int(algorithm) == 3:
     max_eps = max_eps_input if max_eps_input.isdigit() else np.inf
     cluster_method = cluster_method_input if cluster_method_input in ['xi', 'dbscan'] else 'xi'
 
-    labels = optics(df_normalized, min_samples, max_eps, cluster_method)
+    labels = optics(df_normalized, int(min_samples), float(max_eps), str(cluster_method))
 
 elif algorithm.lower() == 'agglomerative_clustering' or int(algorithm) == 4:
-    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
     # ask user for parameters
     number_of_clusters_input = input("Number of clusters: ")
     linkage_input = input("Linkage criterion (possible values: 'ward', 'complete', 'average', 'single'): ")
@@ -252,10 +254,10 @@ elif algorithm.lower() == 'agglomerative_clustering' or int(algorithm) == 4:
     number_of_clusters = number_of_clusters_input if number_of_clusters_input.isdigit() else 4
     linkage = linkage_input if linkage_input in ['ward', 'complete', 'average', 'single'] else 'ward'
 
-    labels = agglomerative_clustering(df_normalized, number_of_clusters, affinity, linkage)
+    labels = agglomerative_clustering(df_normalized, int(number_of_clusters), str(affinity), str(linkage))
 
 elif algorithm.lower() == 'gaussian_mixture' or int(algorithm) == 5:
-    print("\nPlease enter the values for the following parameters. Press enter for each parameter to use the default values.")
+    print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
     # ask user for parameters
     n_components_input = input("Number of mixture components: ")
     covariance_type_input = input("Covariance type (possible values: 'full', 'tied', 'diag', 'spherical'): ")
@@ -268,7 +270,7 @@ elif algorithm.lower() == 'gaussian_mixture' or int(algorithm) == 5:
     max_iter = max_iter_input if max_iter_input.isdigit() else 100
     n_init = n_init_input if n_init_input.isdigit() else 1
 
-    labels = gaussian_mixture(df_normalized, n_components, covariance_type, max_iter, n_init)
+    labels = gaussian_mixture(df_normalized, int(n_components), str(covariance_type), int(max_iter), float(n_init))
 
 print("\nNumber of cluster found:", len(np.unique(labels)))
 print("Different labels of clusters:", np.unique(labels))
@@ -303,6 +305,8 @@ if cluster_visualization:
     print("Select a region of the point cloud by holding CTRL (COMMAND on Mac) and LEFT MOUSE BUTTON while dragging a box.")
     print("\nWhen a selection was performed, press ENTER to open a new viewer with the selection and without the ground points.")
     print("Press ENTER to quit the viewer.")
+
+    print("\nStarting visualization...")
 
     points = df[['X', 'Y', 'Z']].to_numpy()
     labels = df['Label'].to_numpy()
