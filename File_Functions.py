@@ -15,11 +15,11 @@ def describe(input_file):
 
     print("Unique classification:\t\t", np.unique(las.classification))
     print("Number of classifications:\t", len(las.classification))  # total number of classifications = number of points -> each point is classified
-    print("Point Count:\t\t\t\t", las.header.point_count)
-    print("Point Format:\t\t\t\t", las.point_format.id)  # https://pylas.readthedocs.io/en/latest/intro.html#point-format-3
+    print("Point Count:\t\t\t", las.header.point_count)
+    print("Point Format:\t\t\t", las.point_format.id)  # https://pylas.readthedocs.io/en/latest/intro.html#point-format-3
 
     dim = las.point_format.dimension_names
-    print("Dimension Names:\t\t\t", dim)
+    print("Dimension Names:\t\t", dim)
 
     print("\nValues of each dimension:")
     for i in range(len(dim)):
