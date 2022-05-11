@@ -22,20 +22,6 @@ if input_path.endswith('.laz', -4) or input_path.endswith('.las', -4):
 elif input_path.endswith('.csv', -4):
     file_type = 'CSV'
 
-# for development (quickly test the application with inputting a path each time)
-elif input_path == "1":
-    file_type = 'LAZ'
-    input_path = 'Files/LAS_Files/test_file.las'
-elif input_path == "2":
-    file_type = 'LAZ'
-    input_path = 'Files/LAS_Files/test_file2.las'
-elif input_path == "3":
-    file_type = 'LAZ'
-    input_path = 'Files/LAS_Files/test_file3.las'
-elif input_path == "4":
-    file_type = 'LAZ'
-    input_path = 'Files/LAS_Files/test_file4_with_water.las'
-
 # Processing of LAZ file type
 if file_type == 'LAZ':
     print("\nDecompressing LAZ file...")

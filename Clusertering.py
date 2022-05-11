@@ -36,7 +36,7 @@ def preprocessing(dataframe):
     scaler = StandardScaler()
     df_scaled = scaler.fit_transform(df)
 
-    print("Scaled Numpy Array:\n", df_scaled)
+    #print("Scaled Numpy Array:\n", df_scaled)
 
     # Normalizing the data so that the data approximately follows a Gaussian distribution
     df_normalized = normalize(df_scaled)
