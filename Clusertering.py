@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import normalize
 from sklearn.cluster import DBSCAN, KMeans, OPTICS, AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
+from yellowbrick.cluster import KElbowVisualizer
 
 
 def get_df_of_class(input_file, classification, csv):
@@ -45,9 +46,58 @@ def preprocessing(dataframe):
     df_normalized = pd.DataFrame(df_normalized)
     df_normalized.columns = ['X', 'Y', 'Z']
 
-    print("\nNormalized dataframe:\n", df_normalized.head())
+    print("Normalized dataframe:\n", df_normalized.head())
 
     return df_scaled, df_normalized
+
+
+def elbow_method(df, model, k):
+    # ask the user if he wants to use the elbow method
+    el = input("\nDo you want to use the elbow method to help you choosing the appropriate value for k? (y / n): ")
+
+    elbow = False
+    valid_answer = False
+
+    # continue to ask for a valid answer until the user gives a valid input
+    while not valid_answer:
+        if el.lower() == 'y' or el.lower() == 'yes':
+            elbow = True
+            valid_answer = True
+        elif el.lower() == 'n' or el.lower() == 'no':
+            elbow = False
+            valid_answer = True
+        else:
+            el = input("Please enter a valid answer (y / n): ")
+
+    if elbow:
+        print("\nComputing the optimal value for k...")
+        visualizer = KElbowVisualizer(model, k=k)
+        # fit the data to the visualizer
+        visualizer.fit(pd.DataFrame(df))
+
+        # ask the user if he wants to visualize the graph of the elbow method
+        show = input("\nDo you want to visualize the graph that is created by the elbow method? (y / n): ")
+
+        show_graph = False
+        valid_answer = False
+
+        # continue to ask for a valid answer until the user gives a valid input
+        while not valid_answer:
+            if show.lower() == 'y' or show.lower() == 'yes':
+                show_graph = True
+                valid_answer = True
+            elif show.lower() == 'n' or show.lower() == 'no':
+                show_graph = False
+                valid_answer = True
+            else:
+                show = input("Please enter a valid answer (y / n): ")
+
+        if show_graph:
+            print("\nTo continue with using the application, you have to close the window that shows the graph.")
+            # render the graph
+            visualizer.show()
+
+        return visualizer.elbow_value_
 
 
 def dbscan(df, eps, min_samples, algorithm):

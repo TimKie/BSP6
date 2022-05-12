@@ -200,8 +200,8 @@ if file_type == 'LAZ':
             algorithm = input("Please enter a valid answer (string of the above list): ")
 
     if algorithm.lower() == 'dbscan' or int(algorithm) == 1:
-        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         # ask user for parameters
+        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         eps_input = input("EPS (distance between two samples): ")
         min_samples_input = input("Minimum number of samples: ")
         algorithm_input = input("Algorithm (possible values: 'auto', 'ball_tree', 'kd_tree', 'brute'): ")
@@ -214,8 +214,12 @@ if file_type == 'LAZ':
         labels = dbscan(df_normalized, float(eps), int(min_samples), str(algo))
 
     elif algorithm.lower() == 'kmeans' or int(algorithm) == 2:
-        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
+        # elbow method
+        elbow_value = elbow_method(model=KMeans(), df=df_normalized, k=(1, 15))
+        print("\nBest value for k according to the elbow method:", elbow_value)
+
         # ask user for parameters
+        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         number_of_clusters_input = input("Number of clusters: ")
         n_init_input = input("Number of new initialization of cluster centroids: ")
         max_iter_input = input("Maximum number of iterations: ")
@@ -230,8 +234,8 @@ if file_type == 'LAZ':
         labels = kmeans(df_normalized, int(number_of_clusters), int(n_init), int(max_iter), str(algo))
 
     elif algorithm.lower() == 'optics' or int(algorithm) == 3:
-        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         # ask user for parameters
+        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         min_samples_input = input("Minimum number of samples: ")
         max_eps_input = input("Maximum EPS (distance between two samples): ")
         cluster_method_input = input("Clustering method (possible values: 'xi', 'dbscan'): ")
@@ -244,8 +248,12 @@ if file_type == 'LAZ':
         labels = optics(df_normalized, int(min_samples), float(max_eps), str(cluster_method))
 
     elif algorithm.lower() == 'agglomerative_clustering' or int(algorithm) == 4:
-        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
+        # elbow method
+        elbow_value = elbow_method(model=AgglomerativeClustering(), df=df_normalized, k=(1, 15))
+        print("\nBest value for k according to the elbow method:", elbow_value)
+
         # ask user for parameters
+        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         number_of_clusters_input = input("Number of clusters: ")
         linkage_input = input("Linkage criterion (possible values: 'ward', 'complete', 'average', 'single'): ")
         # if linkage is “ward”, only “euclidean” is accepted as affinity
@@ -261,8 +269,8 @@ if file_type == 'LAZ':
         labels = agglomerative_clustering(df_normalized, int(number_of_clusters), str(affinity), str(linkage))
 
     elif algorithm.lower() == 'gaussian_mixture' or int(algorithm) == 5:
-        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         # ask user for parameters
+        print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         n_components_input = input("Number of mixture components: ")
         covariance_type_input = input("Covariance type (possible values: 'full', 'tied', 'diag', 'spherical'): ")
         max_iter_input = input("Maximum number of iterations: ")
