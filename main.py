@@ -25,7 +25,7 @@ elif input_path.endswith('.csv', -4):
 # Processing of LAZ file type
 if file_type == 'LAZ':
     print("\nDecompressing LAZ file...")
-    las_file = decompress(input_path, "Files/LAS_Files/output_file.las")
+    las_file = decompress(input_path, "./output_file.las")
 
     # ask if the user wants to get a description of the file
     des = input("\nDo you want to get a description of the decompressed LAS file? (y / n): ")
@@ -404,3 +404,6 @@ else:
     viewer1.wait()
     viewer1.close()
 
+
+# delete the las file (output_file.las) that was created at the beginning of the script (decompression)
+os.remove("./output_file.las")
