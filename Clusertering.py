@@ -8,6 +8,20 @@ from sklearn.mixture import GaussianMixture
 from yellowbrick.cluster import KElbowVisualizer
 
 
+def ask_for_valid_answer(user_input):
+    valid_answer = False
+    # continue to ask for a valid answer until the user gives a valid input
+    while not valid_answer:
+        if user_input.lower() == 'y' or user_input.lower() == 'yes':
+            valid_answer = True
+            return True
+        elif user_input.lower() == 'n' or user_input.lower() == 'no':
+            valid_answer = True
+            return False
+        else:
+            user_input = input("Please enter a valid answer (y / n): ")
+
+
 def get_df_of_class(input_file, classification, csv):
     print("\n--------------------------- Cluster Data Description ---------------------------")
     las = pylas.read(input_file)
@@ -55,19 +69,8 @@ def elbow_method(df, model, k):
     # ask the user if he wants to use the elbow method
     el = input("\nDo you want to use the elbow method to help you choosing the appropriate value for k? (y / n): ")
 
-    elbow = False
-    valid_answer = False
-
     # continue to ask for a valid answer until the user gives a valid input
-    while not valid_answer:
-        if el.lower() == 'y' or el.lower() == 'yes':
-            elbow = True
-            valid_answer = True
-        elif el.lower() == 'n' or el.lower() == 'no':
-            elbow = False
-            valid_answer = True
-        else:
-            el = input("Please enter a valid answer (y / n): ")
+    elbow = ask_for_valid_answer(el)
 
     if elbow:
         print("\nComputing the optimal value for k...")
@@ -78,19 +81,8 @@ def elbow_method(df, model, k):
         # ask the user if he wants to visualize the graph of the elbow method
         show = input("\nDo you want to visualize the graph that is created by the elbow method? (y / n): ")
 
-        show_graph = False
-        valid_answer = False
-
         # continue to ask for a valid answer until the user gives a valid input
-        while not valid_answer:
-            if show.lower() == 'y' or show.lower() == 'yes':
-                show_graph = True
-                valid_answer = True
-            elif show.lower() == 'n' or show.lower() == 'no':
-                show_graph = False
-                valid_answer = True
-            else:
-                show = input("Please enter a valid answer (y / n): ")
+        show_graph = ask_for_valid_answer(show)
 
         if show_graph:
             print("\nTo continue with using the application, you have to close the window that shows the graph.")

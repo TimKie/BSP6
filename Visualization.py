@@ -2,7 +2,6 @@ import numpy as np
 import pptk
 import pylas
 import pandas as pd
-import matplotlib.colors as mcolors
 
 # Tutorial: https://towardsdatascience.com/guide-to-real-time-visualisation-of-massive-3d-point-clouds-in-python-ea6f00241ee0
 
@@ -10,9 +9,7 @@ import matplotlib.colors as mcolors
 def prepare_data(input_path):
     point_cloud = pylas.read(input_path)
     points = np.vstack((point_cloud.x, point_cloud.y, point_cloud.z)).transpose()
-    #print("\nPoints:", points)
     colors = np.vstack((point_cloud.red, point_cloud.green, point_cloud.blue)).transpose()
-    #print("\nColors:", colors)
     #normals = np.vstack((point_cloud.normalx, point_cloud.normaly, point_cloud.normalz)).transpose()
     return point_cloud, points, colors
 

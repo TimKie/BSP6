@@ -30,18 +30,11 @@ if file_type == 'LAZ':
     # ask if the user wants to get a description of the file
     des = input("\nDo you want to get a description of the decompressed LAS file? (y / n): ")
 
-    valid_answer = False
-
     # continue to ask for a valid answer until the user gives a valid input
-    while not valid_answer:
-        if des.lower() == 'y' or des.lower() == 'yes':
-            valid_answer = True
-            print("\n--------------------------------------- DESCRIPTION OF THE LAS FILE ---------------------------------------\n ")
-            describe(las_file)
-        elif des.lower() == 'n' or des.lower() == 'no':
-            valid_answer = True
-        else:
-            des = input("Please enter a valid answer (y / n): ")
+    description = ask_for_valid_answer(des)
+    if description:
+        print("\n--------------------------------------- DESCRIPTION OF THE LAS FILE ---------------------------------------\n ")
+        describe(las_file)
 
     classes = np.unique(pylas.read(las_file).classification)
 
@@ -50,19 +43,8 @@ if file_type == 'LAZ':
     # ask if the user wants to visualize the file (add option to enter a class and only visualize the point of this class)
     vis = input("\nDo you want to visualize the raw dataset? (y / n): ")
 
-    visualization = False
-    valid_answer = False
-
     # continue to ask for a valid answer until the user gives a valid input
-    while not valid_answer:
-        if vis.lower() == 'y' or vis.lower() == 'yes':
-            visualization = True
-            valid_answer = True
-        elif vis.lower() == 'n' or vis.lower() == 'no':
-            visualization = False
-            valid_answer = True
-        else:
-            vis = input("Please enter a valid answer (y / n): ")
+    visualization = ask_for_valid_answer(vis)
 
     # visualization of raw data set
     if visualization:
@@ -79,19 +61,8 @@ if file_type == 'LAZ':
         # ask user if he wants to visualize the whole dataset or only one class
         vis_one_class = input("\nDo you want to visualize a specific class (y / n): ")
 
-        visualize_one_class = False
-        valid_answer = False
-
         # continue to ask for a valid answer until the user gives a valid input
-        while not valid_answer:
-            if vis_one_class.lower() == 'y' or vis_one_class.lower() == 'yes':
-                visualize_one_class = True
-                valid_answer = True
-            elif vis_one_class.lower() == 'n' or vis_one_class.lower() == 'no':
-                visualize_one_class = False
-                valid_answer = True
-            else:
-                vis_one_class = input("Please enter a valid answer (y / n): ")
+        visualize_one_class = ask_for_valid_answer(vis_one_class)
 
         # visualize only points from a specific class
         if visualize_one_class:
@@ -300,19 +271,8 @@ if file_type == 'LAZ':
     # ask user if he wants to visualize the clusters
     cluster_vis = input("Do you want to visualize the computed clusters? (y / n): ")
 
-    cluster_visualization = False
-    valid_answer = False
-
     # continue to ask for a valid answer until the user gives a valid input
-    while not valid_answer:
-        if cluster_vis.lower() == 'y' or cluster_vis.lower() == 'yes':
-            cluster_visualization = True
-            valid_answer = True
-        elif cluster_vis.lower() == 'n' or cluster_vis.lower() == 'no':
-            cluster_visualization = False
-            valid_answer = True
-        else:
-            cluster_vis = input("Please enter a valid answer (y / n): ")
+    cluster_visualization = ask_for_valid_answer(cluster_vis)
 
     if cluster_visualization:
         print("\nNavigate through the point cloud by holding and dragging the LEFT MOUSE BUTTON (rotate the viewpoint around a turntable).")
@@ -345,18 +305,8 @@ if file_type == 'LAZ':
     print("\n------------------------------------------- CLUSTER RESULT DATAFRAME ------------------------------------------")
     results = input("Do you want to save the clustering results as a CSV file? (y / n): ")
 
-    valid_answer = False
-    save_results = False
-
     # continue to ask for a valid answer until the user gives a valid input
-    while not valid_answer:
-        if results.lower() == 'y' or results.lower() == 'yes':
-            valid_answer = True
-            save_results = True
-        elif results.lower() == 'n' or results.lower() == 'no':
-            valid_answer = True
-        else:
-            results = input("Please enter a valid answer (y / n): ")
+    save_results = ask_for_valid_answer(results)
 
     if save_results:
         valid_path = False
