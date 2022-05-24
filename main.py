@@ -31,7 +31,7 @@ if file_type == 'LAZ':
     des = input("\nDo you want to get a description of the decompressed LAS file? (y / n): ")
 
     # continue to ask for a valid answer until the user gives a valid input
-    description = ask_for_valid_answer(des)
+    description = ask_for_valid_answer(des, default=True)
     if description:
         print("\n--------------------------------------- DESCRIPTION OF THE LAS FILE ---------------------------------------\n ")
         describe(las_file)
@@ -44,7 +44,7 @@ if file_type == 'LAZ':
     vis = input("\nDo you want to visualize the raw dataset? (y / n): ")
 
     # continue to ask for a valid answer until the user gives a valid input
-    visualization = ask_for_valid_answer(vis)
+    visualization = ask_for_valid_answer(vis, default=True)
 
     # visualization of raw data set
     if visualization:
@@ -62,7 +62,7 @@ if file_type == 'LAZ':
         vis_one_class = input("\nDo you want to visualize a specific class (y / n): ")
 
         # continue to ask for a valid answer until the user gives a valid input
-        visualize_one_class = ask_for_valid_answer(vis_one_class)
+        visualize_one_class = ask_for_valid_answer(vis_one_class, default=False)
 
         # visualize only points from a specific class
         if visualize_one_class:
@@ -261,8 +261,20 @@ if file_type == 'LAZ':
     df['Label'] = labels.tolist()
     print("\nOriginal dataframe with label:\n", df.head())
 
+    # -------------------- Replace the results of the clustering (colors) in the original dataframe --------------------
     # apply the function and create a new column to store the colors
     df['Color'] = df.apply(lambda row: colorise(row), axis=1)
+
+    las = pylas.read(las_file)
+    df_complete = pd.DataFrame(las.points)
+    df_complete = df_complete[['X', 'Y', 'Z']]
+
+    point_cloud, points, colors = prepare_data(las_file)
+    df_complete['Color'] = colors.tolist()
+
+    df_complete.update(df)
+
+    df = df_complete
 
 
 # --------------------------------------------- Visualization of Clusters ----------------------------------------------
@@ -272,7 +284,7 @@ if file_type == 'LAZ':
     cluster_vis = input("Do you want to visualize the computed clusters? (y / n): ")
 
     # continue to ask for a valid answer until the user gives a valid input
-    cluster_visualization = ask_for_valid_answer(cluster_vis)
+    cluster_visualization = ask_for_valid_answer(cluster_vis, default=True)
 
     if cluster_visualization:
         print("\nNavigate through the point cloud by holding and dragging the LEFT MOUSE BUTTON (rotate the viewpoint around a turntable).")
@@ -284,7 +296,7 @@ if file_type == 'LAZ':
         print("\nStarting visualization...")
 
         points = df[['X', 'Y', 'Z']].to_numpy()
-        labels = df['Label'].to_numpy()
+        #labels = df['Label'].to_numpy()
 
         print("\nDataframe with color:\n", df.head())
 
@@ -306,7 +318,7 @@ if file_type == 'LAZ':
     results = input("Do you want to save the clustering results as a CSV file? (y / n): ")
 
     # continue to ask for a valid answer until the user gives a valid input
-    save_results = ask_for_valid_answer(results)
+    save_results = ask_for_valid_answer(results, default=False)
 
     if save_results:
         valid_path = False

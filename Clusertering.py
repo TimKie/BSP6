@@ -8,11 +8,14 @@ from sklearn.mixture import GaussianMixture
 from yellowbrick.cluster import KElbowVisualizer
 
 
-def ask_for_valid_answer(user_input):
+def ask_for_valid_answer(user_input, default):
     valid_answer = False
     # continue to ask for a valid answer until the user gives a valid input
     while not valid_answer:
-        if user_input.lower() == 'y' or user_input.lower() == 'yes':
+        # if the user presses enter without entering an answer -> use the default answer
+        if user_input.lower() == '':
+            return default
+        elif user_input.lower() == 'y' or user_input.lower() == 'yes':
             valid_answer = True
             return True
         elif user_input.lower() == 'n' or user_input.lower() == 'no':
