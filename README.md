@@ -19,13 +19,13 @@ There is only one step that has to be performed before being able to run this ap
 ## Pre-requisites
 - The Python version 3.6 has to be installed on the computer
 - The following libraries have to be installed :
-  - matplotlib 3.3.4
-  - numpy 1.19.5
-  - pandas 1.1.5
-  - pptk 0.1.0
-  - pylas 0.4.3
-  - scikit_learn 0.24.2
-  - yellowbrick 1.3.post1
+  - [matplotlib](https://matplotlib.org/) 3.3.4
+  - [numpy](https://numpy.org/) 1.19.5
+  - [pandas](https://pandas.pydata.org/) 1.1.5
+  - [pptk](https://heremaps.github.io/pptk/index.html) 0.1.0
+  - [pylas](https://pylas.readthedocs.io/en/latest/) 0.4.3
+  - [scikit_learn](https://scikit-learn.org/stable/) 0.24.2
+  - [yellowbrick](https://www.scikit-yb.org/en/latest/) 1.3.post1
 
 
 ## Usage
