@@ -73,7 +73,7 @@ def elbow_method(df, model, k):
     el = input("\nDo you want to use the elbow method to help you choosing the appropriate value for k? (y / n): ")
 
     # continue to ask for a valid answer until the user gives a valid input
-    elbow = ask_for_valid_answer(el)
+    elbow = ask_for_valid_answer(el, default=True)
 
     if elbow:
         print("\nComputing the optimal value for k...")
@@ -85,7 +85,7 @@ def elbow_method(df, model, k):
         show = input("\nDo you want to visualize the graph that is created by the elbow method? (y / n): ")
 
         # continue to ask for a valid answer until the user gives a valid input
-        show_graph = ask_for_valid_answer(show)
+        show_graph = ask_for_valid_answer(show, default=False)
 
         if show_graph:
             print("\nTo continue with using the application, you have to close the window that shows the graph.")

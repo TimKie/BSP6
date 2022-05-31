@@ -165,12 +165,12 @@ if file_type == 'LAZ':
     valid_answer = False
     # continue to ask for a valid answer until the user gives a valid input
     while not valid_answer:
-        if (algorithm.lower() in dict_of_algorithms) or (int(algorithm) in dict_of_algorithms.values()):
+        if (algorithm.lower() in dict_of_algorithms) or (float(algorithm) in dict_of_algorithms.values()):
             valid_answer = True
         else:
-            algorithm = input("Please enter a valid answer (string of the above list): ")
+            algorithm = input("Please enter a valid answer (string or integer of the above list): ")
 
-    if algorithm.lower() == 'dbscan' or int(algorithm) == 1:
+    if algorithm.lower() == 'dbscan' or algorithm == '1':
         # ask user for parameters
         print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         eps_input = input("EPS (distance between two samples): ")
@@ -184,7 +184,7 @@ if file_type == 'LAZ':
 
         labels = dbscan(df_normalized, float(eps), int(min_samples), str(algo))
 
-    elif algorithm.lower() == 'kmeans' or int(algorithm) == 2:
+    elif algorithm.lower() == 'kmeans' or algorithm == '2':
         # elbow method
         elbow_value = elbow_method(model=KMeans(), df=df_normalized, k=(1, 15))
         print("\nBest value for k according to the elbow method:", elbow_value)
@@ -204,7 +204,7 @@ if file_type == 'LAZ':
 
         labels = kmeans(df_normalized, int(number_of_clusters), int(n_init), int(max_iter), str(algo))
 
-    elif algorithm.lower() == 'optics' or int(algorithm) == 3:
+    elif algorithm.lower() == 'optics' or algorithm == '3':
         # ask user for parameters
         print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         min_samples_input = input("Minimum number of samples: ")
@@ -218,7 +218,7 @@ if file_type == 'LAZ':
 
         labels = optics(df_normalized, int(min_samples), float(max_eps), str(cluster_method))
 
-    elif algorithm.lower() == 'agglomerative_clustering' or int(algorithm) == 4:
+    elif algorithm.lower() == 'agglomerative_clustering' or algorithm == '4':
         # elbow method
         elbow_value = elbow_method(model=AgglomerativeClustering(), df=df_normalized, k=(1, 15))
         print("\nBest value for k according to the elbow method:", elbow_value)
@@ -239,7 +239,7 @@ if file_type == 'LAZ':
 
         labels = agglomerative_clustering(df_normalized, int(number_of_clusters), str(affinity), str(linkage))
 
-    elif algorithm.lower() == 'gaussian_mixture' or int(algorithm) == 5:
+    elif algorithm.lower() == 'gaussian_mixture' or algorithm == '5':
         # ask user for parameters
         print("\nPlease enter the values for the following parameters. Press ENTER for each parameter to use the default values.")
         n_components_input = input("Number of mixture components: ")
@@ -263,7 +263,11 @@ if file_type == 'LAZ':
 
     # -------------------- Replace the results of the clustering (colors) in the original dataframe --------------------
     # apply the function and create a new column to store the colors
-    df['Color'] = df.apply(lambda row: colorise(row), axis=1)
+    try:
+        df['Color'] = df.apply(lambda row: colorise(row), axis=1)
+    # if there are more than 19 clusters, there will be not enough colors in the color map
+    except IndexError:
+        print("\n-- Error: Too many clusters! Please choose more appropriate parameters for the clustering model for this dataset. --")
 
     las = pylas.read(las_file)
     df_complete = pd.DataFrame(las.points)
