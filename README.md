@@ -1,6 +1,8 @@
 # Bachelor Semester Project 6
 The goal of this project is to implement a Python script that is able to process LiDAR data stored in LAZ/LAS files. The processing includes clustering of the data points and the visualization of those clusters.
 
+The application was designed to process the LAZ files provided by the  luxembourgish data platform available [here](https://data.public.lu/en/datasets/lidar-2019-releve-3d-du-territoire-luxembourgeois/).
+
 ## Functionalities
  - Decompression of LAZ to LAS files
  - Visualization of the whole LiDAR dataset (or of a specific class of the dataset)
