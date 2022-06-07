@@ -39,5 +39,6 @@ To run this application on your computer:
 
 ## Screenshots
 The following screenshots show some of the windows that open during the usage of the application as well as an example of the command line output of the application.
+
 <img src="Screenshots/Window to choose LAZ file.png" width="49%"> <img src="Screenshots/Visualization of clustered dataset.png" width="49%">
 <img src="Screenshots/Script Output (Usage of application).png" width="100%">
