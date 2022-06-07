@@ -36,3 +36,8 @@ To run this application on your computer:
 2. In the terminal, go to the location where the code was cloned (downloaded) (the location of the *main.py* file)
 3. (If the libraries listed above are not yet installed on your computer, execute the command ``python3.6 -m pip install -r requirements.txt`` to install the libraries for Python 3.6)
 4. Execute the command ``python3.6 main.py``
+
+## Screenshots
+The following screenshots show some of the windows that open during the usage of the application as well as an example of the command line output of the application.
+<img src="Screenshots/Window to choose LAZ file.png" width="49%"> <img src="Screenshots/Visualization of clustered dataset.png" width="49%">
+<img src="Screenshots/Script Output (Usage of application).png" width="100%">
